@@ -13,7 +13,7 @@ This repository is divided in 2 parts:
 ## Example 🎬
 
 <p>
-  <img src="SpeechRecognizerImage.jpeg" alt="simple video gif"/>
+  <img src="SpeechRecognizerImage.jpeg" alt="simple video gif" width="492" height="1024"/>
 </p>
 
 *In this image it is possible to see 5 results appearing on the panel after speeching to the device "this is a continuous text speech".*
