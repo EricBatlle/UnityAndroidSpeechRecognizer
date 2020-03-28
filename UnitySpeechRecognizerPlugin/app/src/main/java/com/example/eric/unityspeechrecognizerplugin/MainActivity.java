@@ -14,9 +14,7 @@ import android.util.Log;
 import com.unity3d.player.UnityPlayer;
 import com.unity3d.player.UnityPlayerActivity;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * Created by Eric on 27/03/2020.
@@ -30,13 +28,14 @@ public class MainActivity extends UnityPlayerActivity
     public static String androidBridgeGameObjectName = "AndroidBridge";
 
     //SPEECH RECOGNIZER
+    public SpeechRecognizer sr;
+    public SpeechRecognitionListener speechListener = new SpeechRecognitionListener();
     private static final int REQ_CODE_SPEECH_INPUT = 100;
     private static String gQuestion = "Hello, How can I help you?";
     private static boolean languageNotSet = true;
     private static String glanguage = "en-US";
     private static int gMaxResults = 10;
-    public SpeechRecognizer sr;
-    public SpeechRecognitionListener speechListener = new SpeechRecognitionListener();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -114,13 +113,16 @@ public class MainActivity extends UnityPlayerActivity
         StopListening();
         StartListening();
     }
+    public void SetContinuousListening(boolean isContinuous)
+    {
+        speechListener.continuousListening = isContinuous;
+    }
 
-    class SpeechRecognitionListener implements RecognitionListener {
+    class SpeechRecognitionListener implements RecognitionListener
+    {
         private ArrayList<String> resultData = new ArrayList<>();
-        private List<String> dataList;
-        private Boolean keepListening = false;
+        public boolean continuousListening = false;
 
-        @Override
         public void onReadyForSpeech(Bundle params) {
             Log.d(TAG, "onReadyForSpeech");
         }
@@ -141,7 +143,7 @@ public class MainActivity extends UnityPlayerActivity
 
         public void onError(int error)
         {
-            if(keepListening)
+            if(continuousListening)
                 RestartListening();
         }
 
@@ -151,15 +153,14 @@ public class MainActivity extends UnityPlayerActivity
             resultData = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             if (resultData != null)
             {
-                for (int i = 0; i < resultData.size(); i++)
+                str.append(resultData.get(0));
+                for (int i = 1; i < resultData.size(); i++)
                 {
-                    Log.d(TAG, "result " + resultData.get(i));
-                    str.append(resultData.get(i));
-                    str.append("~");
+                    str.append("~").append(resultData.get(i));
                 }
             }
             SendUnityResults(str.toString());
-            if(keepListening)
+            if(continuousListening)
                 RestartListening();
         }
 
