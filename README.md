@@ -1,9 +1,9 @@
 # UnityAndroidSpeechRecognizer 🗣️
 *Created by Eric Batlle Clavero*
 
- A simple **Android App** made with **Unity** that implements an **Speech Recognizer** using Android's native recognizer. 
+ A simple **Android App** made with **Unity** that implements a **Speech Recognizer** using Android's native recognizer. 
 
-**Without** the annoying **pop-up** and the option to keep the app **listening infinetly**, not just once.
+**Without** the annoying **pop-up** and the option to keep the app **listening indefinitely**, not just once.
 
 This repository is divided in 2 parts:
 
@@ -16,7 +16,7 @@ This repository is divided in 2 parts:
   <img src="SpeechRecognizerImage.jpeg" alt="simple video gif" width="246" height="512"/>
 </p>
 
-*In this image it is possible to see 5 results appearing on the panel after speeching to the device "this is a continuous text speech".*
+*In this image it is possible to see 5 results appearing on the panel after speaking to the device "this is a continuous text speech".*
 
 
 ## How to Use ⚙️
