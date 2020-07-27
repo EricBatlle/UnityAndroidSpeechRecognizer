@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 using static AndroidBridgeUtils;
 
@@ -6,7 +7,7 @@ public class AndroidBridge : MonoBehaviour, IAndroidBridge
 {
     [SerializeField] private Button startListeningBtn = null;
     [SerializeField] private Toggle continuousListeningTgle = null;
-    [SerializeField] private Text resultsTxt = null;
+    [SerializeField] private TextMeshProUGUI resultsTxt = null;
 
     void Start()
     {
