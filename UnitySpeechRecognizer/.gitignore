@@ -2,7 +2,7 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
-UnitySpeechRecognizer/[Ll]ibrary/
+/[Ll]ibrary/
 UnitySpeechRecognizer/[Tt]emp/
 UnitySpeechRecognizer/[Oo]bj/
 #UnitySpeechRecognizer/[Bb]uild/
