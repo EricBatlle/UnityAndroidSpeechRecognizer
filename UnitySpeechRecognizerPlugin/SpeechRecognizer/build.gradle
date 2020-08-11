@@ -22,12 +22,11 @@ android {
 }
 
 dependencies {
-    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly files('./libs/classes.jar') // Avoid redundant Unity Player in final application APK
     implementation "androidx.core:core-ktx:1.3.1"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation files('libs/classes.jar')
 }
 
 android.libraryVariants.all { variant ->
