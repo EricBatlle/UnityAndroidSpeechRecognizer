@@ -1,6 +1,7 @@
 package com.example.eric.unityspeechrecognizerplugin;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,24 +9,49 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import androidx.core.content.ContextCompat;
-import androidx.core.app.ActivityCompat;
 import android.util.Log;
+
 import com.unity3d.player.UnityPlayer;
-import com.unity3d.player.UnityPlayerActivity;
+
 import java.util.ArrayList;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by Eric on 27/03/2020.
  */
 
-public class MainActivity extends UnityPlayerActivity
+public class SpeechRecognizerFragment extends Fragment
 {
+    //Tag to follow logcats
     private static final String TAG = "SpeechRecognizer";
+    // Singleton instance.
+    public static SpeechRecognizerFragment instance;
 
-    //ANDROID BRIDGE
-    public static String androidBridgeGameObjectName = "AndroidBridge";
+    //UNITY CONTEXT
+    String gameObjectName;
+    String resultCallbackName = "OnResult";
+    public static void SendUnityResults(String results)
+    {
+        UnityPlayer.UnitySendMessage(instance.gameObjectName, instance.resultCallbackName, results);
+        Log.d(TAG, results);
+    }
+    public static void SetUp(String gameObjectName)
+    {
+        instance = new SpeechRecognizerFragment();
+        instance.gameObjectName = gameObjectName; // Store 'GameObject' reference
+        UnityPlayer.currentActivity.getFragmentManager().beginTransaction().add(instance, SpeechRecognizerFragment.TAG).commit();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        RequestRecordAudioPermission();
+    }
 
     //SPEECH RECOGNIZER
     public SpeechRecognizer sr;
@@ -36,21 +62,14 @@ public class MainActivity extends UnityPlayerActivity
     private static String glanguage = "en-US";
     private static int gMaxResults = 10;
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        RequestRecordAudioPermission();
-    }
     private void RequestRecordAudioPermission()
     {
         // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
         {
             // Permission is not granted
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO))
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO))
             {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -59,7 +78,7 @@ public class MainActivity extends UnityPlayerActivity
             else
             {
                 // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},20);
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO},20);
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
@@ -72,41 +91,39 @@ public class MainActivity extends UnityPlayerActivity
         }
     }
 
-    //ANDROID BRIDGE
-    public static void SendUnityResults(String results)
+    public void StartListening()
     {
-        UnityPlayer.UnitySendMessage(androidBridgeGameObjectName, "OnResult", results);
-        Log.d(TAG, results);
-    }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "StartListeningCalled");
+                sr = SpeechRecognizer.createSpeechRecognizer(getActivity());
+                sr.setRecognitionListener(speechListener);
 
-    //SPEECH RECOGNIZER
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                if (languageNotSet)
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                else
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, glanguage);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, gMaxResults);
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, gQuestion);
+
+                try
+                {
+                    sr.startListening(intent);
+                }
+                catch (ActivityNotFoundException a)
+                {
+                    Log.d(TAG, a.toString());
+                }
+            }
+        });
+    }
     public void StopListening()
     {
         sr.destroy();
         sr = null;
-    }
-    public void StartListening()
-    {
-        sr = SpeechRecognizer.createSpeechRecognizer(this);
-        sr.setRecognitionListener(speechListener);
-
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        if (languageNotSet)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        else
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, glanguage);
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, gMaxResults);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, gQuestion);
-
-        try
-        {
-            sr.startListening(intent);
-        }
-        catch (ActivityNotFoundException a)
-        {
-            Log.d(TAG, a.toString());
-        }
     }
     public void RestartListening()
     {
@@ -118,6 +135,7 @@ public class MainActivity extends UnityPlayerActivity
         speechListener.continuousListening = isContinuous;
     }
 
+    //SPEECH RECOGNIZER_LISTENER
     class SpeechRecognitionListener implements RecognitionListener
     {
         private ArrayList<String> resultData = new ArrayList<>();
@@ -127,10 +145,12 @@ public class MainActivity extends UnityPlayerActivity
             Log.d(TAG, "onReadyForSpeech");
         }
 
-        public void onBeginningOfSpeech() {Log.d(TAG, "onBeginningOfSpeech");}
+        public void onBeginningOfSpeech() {
+            Log.d(TAG, "onBeginningOfSpeech");
+        }
 
         public void onRmsChanged(float rmsdB) {
-            //Log.d(TAG, "onRmsChanged");
+            /*Log.d(TAG, "onRmsChanged");*/
         }
 
         public void onBufferReceived(byte[] buffer) {
@@ -159,6 +179,7 @@ public class MainActivity extends UnityPlayerActivity
                     str.append("~").append(resultData.get(i));
                 }
             }
+
             SendUnityResults(str.toString());
             if(continuousListening)
                 RestartListening();
@@ -172,5 +193,4 @@ public class MainActivity extends UnityPlayerActivity
             Log.d(TAG, "onEvent " + eventType);
         }
     }
-
 }
