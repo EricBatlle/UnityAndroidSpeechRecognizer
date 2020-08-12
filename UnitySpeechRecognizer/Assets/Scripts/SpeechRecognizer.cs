@@ -1,17 +1,19 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static AndroidBridgeUtils;
+using static SpeechRecognizerPlugin;
 
-public class AndroidBridge : MonoBehaviour, IAndroidBridge
+public class SpeechRecognizer : MonoBehaviour, ISpeechRecognizerPlugin
 {
     [SerializeField] private Button startListeningBtn = null;
     [SerializeField] private Toggle continuousListeningTgle = null;
     [SerializeField] private TextMeshProUGUI resultsTxt = null;
 
+    private SpeechRecognizerPlugin plugin = null;
+
     void Start()
     {
-        this.gameObject.name = ANDROIDBRIDGE_GO_NAME;
+        plugin = SpeechRecognizerPlugin.GetPlatformPluginVersion(this.gameObject.name);
 
         startListeningBtn.onClick.AddListener(StartListening);
         continuousListeningTgle.onValueChanged.AddListener(SetContinuousListening);
@@ -19,12 +21,12 @@ public class AndroidBridge : MonoBehaviour, IAndroidBridge
 
     private void StartListening()
     {
-        AndroidRunnableCall("StartListening");
+        plugin.StartListening();
     }
 
     private void SetContinuousListening(bool isContinuous)
     {
-        AndroidCall("SetContinuousListening", isContinuous);
+        plugin.SetContinuousListening(isContinuous);
     }
 
     public void OnResult(string recognizedResult)
@@ -38,5 +40,4 @@ public class AndroidBridge : MonoBehaviour, IAndroidBridge
             resultsTxt.text += result[i] + '\n';
         }
     }
-
 }
