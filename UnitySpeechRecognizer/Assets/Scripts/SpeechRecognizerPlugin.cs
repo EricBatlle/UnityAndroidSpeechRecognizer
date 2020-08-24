@@ -16,8 +16,13 @@ public abstract class SpeechRecognizerPlugin
         else
         {
             #if UNITY_ANDROID
-            return new SpeechRecognizerPlugin_Android(gameObjectName);
+                return new SpeechRecognizerPlugin_Android(gameObjectName);
             #endif
+            
+#pragma warning disable CS0162 // Unreachable code detected
+            Debug.LogWarning("Remember to set project build to mobile device");
+#pragma warning restore CS0162 // Unreachable code detected
+            return null;
         }
     }
 
