@@ -39,7 +39,7 @@ android.libraryVariants.all { variant ->
     String sourceAARFolder = "${buildDir.getPath()}/outputs/aar/";
     String sourceAARName = "${project.name}-${variant.name}.aar";
     // Target.
-    String targetAssetFolder = "\\UnitySpeechRecognizer\\Assets\\Plugins\\Android";
+    String targetAssetFolder = "\\UnitySpeechRecognizer\\Assets\\Plugins\\SpeechRecognizer\\Android";
     String targetAARFolder = "${rootDir.getPath()}/../${targetAssetFolder}"; // Navigate into 'Assets'
     String targetAARName = "UnitySpeechRecognizer.aar"; // The form you ship your plugin
     // Create task.
