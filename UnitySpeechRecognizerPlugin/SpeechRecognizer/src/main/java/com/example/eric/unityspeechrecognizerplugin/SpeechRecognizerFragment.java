@@ -14,6 +14,7 @@ import android.util.Log;
 import com.unity3d.player.UnityPlayer;
 
 import java.util.ArrayList;
+import java.util.IllformedLocaleException;
 import java.util.Locale;
 
 import androidx.annotation.Nullable;
@@ -34,10 +35,17 @@ public class SpeechRecognizerFragment extends Fragment
     //UNITY CONTEXT
     String gameObjectName;
     String resultCallbackName = "OnResult";
+    String errorCallbackName = "OnError";
     public static void SendUnityResults(String results)
     {
         UnityPlayer.UnitySendMessage(instance.gameObjectName, instance.resultCallbackName, results);
         Log.d(TAG, results);
+    }
+    public static void SendUnityError(ERROR error)
+    {
+        String errorString = String.valueOf(error);
+        UnityPlayer.UnitySendMessage(instance.gameObjectName, instance.errorCallbackName, errorString);
+        Log.d(TAG, errorString);
     }
     public static void SetUp(String gameObjectName)
     {
@@ -47,7 +55,8 @@ public class SpeechRecognizerFragment extends Fragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         RequestRecordAudioPermission();
@@ -56,11 +65,14 @@ public class SpeechRecognizerFragment extends Fragment
     //SPEECH RECOGNIZER
     public SpeechRecognizer sr;
     public SpeechRecognitionListener speechListener = new SpeechRecognitionListener();
-    private static final int REQ_CODE_SPEECH_INPUT = 100;
-    private static String gQuestion = "Hello, How can I help you?";
-    private static boolean languageNotSet = true;
-    private static String glanguage = "en-US";
-    private static int gMaxResults = 10;
+    private static boolean isLanguageSpecified = false;
+    private static String language = "en-US";
+    private static int maxResults = 10;
+
+    public enum ERROR
+    {
+        UNKNOWN, INVALID_LANGUAGE_FORMAT
+    }
 
     private void RequestRecordAudioPermission()
     {
@@ -102,12 +114,11 @@ public class SpeechRecognizerFragment extends Fragment
 
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                if (languageNotSet)
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                if (isLanguageSpecified)
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
                 else
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, glanguage);
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, gMaxResults);
-                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, gQuestion);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, maxResults);
 
                 try
                 {
@@ -119,6 +130,13 @@ public class SpeechRecognizerFragment extends Fragment
                 }
             }
         });
+    }
+    public void StartListening(boolean isContinuous, String language, int maxResults)
+    {
+        SetContinuousListening(isContinuous);
+        SetLanguage(language);
+        SetMaxResults(maxResults);
+        StartListening();
     }
     public void StopListening()
     {
@@ -133,6 +151,23 @@ public class SpeechRecognizerFragment extends Fragment
     public void SetContinuousListening(boolean isContinuous)
     {
         speechListener.continuousListening = isContinuous;
+    }
+    public void SetLanguage(String newLanguage)
+    {
+        try
+        {
+            Locale locale = new Locale.Builder().setLanguageTag(newLanguage).build();
+            language = newLanguage;
+            isLanguageSpecified = true;
+        }catch (IllformedLocaleException exception)
+        {
+            isLanguageSpecified = false;
+            SendUnityError(ERROR.INVALID_LANGUAGE_FORMAT);
+        }
+    }
+    public void SetMaxResults(int newMaxResults)
+    {
+        maxResults = newMaxResults;
     }
 
     //SPEECH RECOGNIZER_LISTENER

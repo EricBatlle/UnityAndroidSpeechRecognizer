@@ -2,8 +2,11 @@
 
 public abstract class SpeechRecognizerPlugin
 {
+    protected bool isContinuousListening = false;
+    protected string language = "en-US";
+    protected int maxResults = 10;
     protected string gameObjectName = "SpeechRecognizer";
-
+    
     protected SpeechRecognizerPlugin(string gameObjectName = null)
     {
         this.gameObjectName = gameObjectName;
@@ -26,13 +29,22 @@ public abstract class SpeechRecognizerPlugin
         }
     }
 
+    public enum ERROR { UNKNOWN, INVALID_LANGUAGE_FORMAT }
     public interface ISpeechRecognizerPlugin
     {
         void OnResult(string recognizedResult);
+        void OnError(string recognizedError);
     }
 
     //Features
     protected abstract void SetUp();
     public abstract void StartListening();
-    public abstract void SetContinuousListening(bool isContinuous);
+    public abstract void StartListening(bool setContinuousListening = false, string language = "en-US", int maxResults = 10);
+    public abstract void StopListening();
+    
+    //Remember that all this modifier-methods will be applied when the last recognition ends...
+    //...so only use them if continuous listening is enabled.
+    public abstract void SetContinuousListening(bool isContinuousListening);
+    public abstract void SetLanguageForNextRecognition(string newLanguage);
+    public abstract void SetMaxResultsForNextRecognition(int newMaxResults);
 }

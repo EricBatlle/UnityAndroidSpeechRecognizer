@@ -44,5 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startListeningBtn: {fileID: 0}
+  stopListeningBtn: {fileID: 0}
   continuousListeningTgle: {fileID: 0}
+  languageDropdown: {fileID: 0}
+  maxResultsInputField: {fileID: 0}
   resultsTxt: {fileID: 0}
+  errorsTxt: {fileID: 0}
