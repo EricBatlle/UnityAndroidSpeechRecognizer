@@ -16,7 +16,7 @@ This repository is divided in 2 parts:
   <img src="SpeechRecognizerImage.jpeg" alt="simple video gif" width="246" height="512"/>
 </p>
 
-*In this image it is possible to see 4 results appearing on the panel after speaking to the device "continuous text speech".*
+*In this image it is possible to see multiple results appearing on the panel after speaking to the device "continuous text speech". *
 
 ## Donations are appreciated! 💸
 *Remember that are many ways to say thank you.*
