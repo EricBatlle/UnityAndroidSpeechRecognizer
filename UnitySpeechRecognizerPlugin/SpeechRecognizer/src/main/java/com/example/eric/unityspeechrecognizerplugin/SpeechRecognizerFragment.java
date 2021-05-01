@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.unity3d.player.UnityPlayer;
@@ -16,10 +19,6 @@ import com.unity3d.player.UnityPlayer;
 import java.util.ArrayList;
 import java.util.IllformedLocaleException;
 import java.util.Locale;
-
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 /**
  * Created by Eric on 27/03/2020.
