@@ -109,8 +109,21 @@ This plugin has been made following a **fragment-pattern** to avoid errors that 
 
 This way you can integrate this plugin with your projects even if they already have more plugins. **Truly pluggable**.
 
-## Upgrading dependencies 📜
+## Upgrading dependencies and choosing plugin version 📜
+Keep in mind that the latest versions [v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3) and [v1.3.support](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3.support) of the plugin work with different android support libraries even if they have identical features.
 
-Keep in mind that the actual release ([v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3)) of the plugin works with **AndroidX** dependencies. That means that is targeting **Android 9** (API level 28).
+- **[v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3)** works with works with **AndroidX** dependencies. That means that is targeting **Android 9** (API level 28).
+- **[v1.3.support](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3.support)** works with works with **Support-v4** dependencies. That means that is targeting **Android 7** (API level 24).
 
-If you want to target older versions I recommend to use the old version of the plugin ([v1.0]((https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.0))) that works with **Android Support v4**. *But remember that some features like specify recognition language aren't available for the moment.* You can download the old plugin source code and APK from [here](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.0).
+### Why multiple versions and when to use each one? 
+Basically cause there are multiple plugins and SDK's out there that work with similar libraries or different API requirements.
+If your other plugins and SDK's use API lvl 28 or above, choose [v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3) version.
+If you need to target older devices (to a minimum of API level 24) choose [v1.3.support](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3.support) version.
+
+## Controlled Exceptions 🚨
+How to solve some of the most typical exceptions when trying to deal with multiple plugins
+
+#### Duplicate class XXXXX found in modules classes.jar (androidx.core:core:1.0.0) and classes.jar (com.android.support:support-compat:27.1.1)
+This exceptions means that another of your project plugins is using a library (like androidX) that internally uses the same class as another library that is using the current plugin. 
+The easiest way to solve this problem is to remove one of the lib file (usually .aar) from one of the two plugins. Keep in mind that this is only valid in case that the erased library is using specific classes that exists in the prior one.
+In case you have Player Service Resolver on your project you can also do "Delete Resolved Libraries" and "Resolve".
