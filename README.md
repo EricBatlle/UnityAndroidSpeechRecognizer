@@ -36,7 +36,7 @@ But if you just want to donate straightforward, I also have [PayPal.me](https://
 
 - If you want to install the whole project and check the code, you need to have **Unity** and **AndroidStudio** installed and updated.
 
-- If you want to install only the few files to make the plugin work and don't want the whole project, you only need to import the package **SpeechRecognizer_pckg** located inside ``UnitySpeechRecognizer/Assets/``. To import it simply drag and drop the file in your current Unity project.
+- If you want to install only the few files to make the plugin work and don't want the whole project, you only need to import the package **SpeechRecognizer_pckg** located inside ``UnitySpeechRecognizer/Assets/``. To import it simply drag and drop the file in your current Unity project. Remember that you can also download the package without cloning the project, simply clicking this [link](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/raw/v1.3.support/UnitySpeechRecognizer/Assets/SpeechRecognizer_pckg.unitypackage).
 
 ## How to Use ⚙️
 
@@ -112,8 +112,8 @@ This way you can integrate this plugin with your projects even if they already h
 ## Upgrading dependencies and choosing plugin version 📜
 Keep in mind that the latest versions [v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3) and [v1.3.support](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3.support) of the plugin work with different android support libraries even if they have identical features.
 
-- **[v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3)** works with works with **AndroidX** dependencies. That means that is targeting **Android 9** (API level 28).
-- **[v1.3.support](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3.support)** works with works with **Support-v4** dependencies. That means that is targeting **Android 7** (API level 24).
+- **[v1.3](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3)** works with **AndroidX** dependencies. That means that is targeting **Android 9** (API level 28).
+- **[v1.3.support](https://github.com/EricBatlle/UnityAndroidSpeechRecognizer/releases/tag/v1.3.support)** works with **Support-v4** dependencies. That means that is targeting **Android 7** (API level 24).
 
 ### Why multiple versions and when to use each one? 
 Basically cause there are multiple plugins and SDK's out there that work with similar libraries or different API requirements.
